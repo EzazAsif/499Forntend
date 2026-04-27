@@ -4,15 +4,14 @@
   min-height: 100vh;
   width: 100%;
 
-  /* inherit your design system */
   background: var(--warm-gray);
   color: var(--deep-slate);
 
   display: flex;
   flex-direction: column;
 
-  /* prevent horizontal bugs */
   overflow-x: hidden;
+  overflow-y: auto; /* ✅ ADD THIS */
 }
 
 html,
@@ -21,7 +20,8 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #020617;
   font-family:
     system-ui,

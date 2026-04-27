@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.landing > * {
+  flex-shrink: 0;
+}
