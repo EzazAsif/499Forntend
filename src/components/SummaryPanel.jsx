@@ -8,6 +8,8 @@ export default function SummaryPanel() {
   const fetched = useRef(false);
   const audioRef = useRef(null);
 
+  const API = "http://localhost:3000"; // 🔥 replace this
+
   /* 🧠 Fetch summary */
   useEffect(() => {
     if (fetched.current) return;
@@ -15,9 +17,8 @@ export default function SummaryPanel() {
 
     const fetchSummary = async () => {
       try {
-        const res = await fetch("http://localhost:3000/summarize");
+        const res = await fetch(`${API}/summarize`);
         const data = await res.json();
-
         setSummary(data.summary);
       } catch (err) {
         console.error("Summary fetch failed", err);
@@ -33,7 +34,7 @@ export default function SummaryPanel() {
 
     const fetchArticles = async () => {
       try {
-        const res = await fetch("http://localhost:3000/articles");
+        const res = await fetch(`${API}/articles`);
         const data = await res.json();
         setLinks(data.links || []);
         setVideos(data.videos || []);
@@ -45,19 +46,16 @@ export default function SummaryPanel() {
     fetchArticles();
   }, [summary]);
 
-  /* 🔊 Speak summary using YOUR TTS API */
+  /* 🔊 Speak summary */
   useEffect(() => {
     if (!summary) return;
 
-    // stop previous audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
     }
 
-    const audio = new Audio(
-      `http://localhost:3000/tts?text=${encodeURIComponent(summary)}`,
-    );
+    const audio = new Audio(`${API}/tts?text=${encodeURIComponent(summary)}`);
 
     audioRef.current = audio;
     audio.preload = "auto";
@@ -75,7 +73,7 @@ export default function SummaryPanel() {
     };
   }, [summary]);
 
-  /* 🎥 Decode DuckDuckGo redirect */
+  /* 🎥 Helpers */
   const getVideoUrl = (url) => {
     try {
       return decodeURIComponent(url.split("uddg=")[1] || url);
@@ -84,7 +82,6 @@ export default function SummaryPanel() {
     }
   };
 
-  /* 🖼️ YouTube thumbnail extractor */
   const getThumbnail = (url) => {
     try {
       const decoded = getVideoUrl(url);
@@ -103,12 +100,15 @@ export default function SummaryPanel() {
         padding: "30px",
         height: "100%",
         overflowY: "auto",
-        color: "#ffffff",
+        color: "#000000", // ✅ ALL TEXT BLACK
+        background: "#f8fbff",
       }}
     >
       {/* SUMMARY */}
       <div style={{ marginBottom: "30px" }}>
-        <h2 className="sidebar-title">Session Summary</h2>
+        <h2 className="sidebar-title" style={{ color: "#0284c7" }}>
+          Session Summary
+        </h2>
 
         <div
           className="card"
@@ -116,6 +116,9 @@ export default function SummaryPanel() {
             fontSize: "15px",
             lineHeight: "1.7",
             padding: "20px",
+            color: "#000000",
+            background: "#ffffff",
+            border: "1px solid rgba(0,0,0,0.08)",
           }}
         >
           {summary || "Summary will appear here..."}
@@ -124,7 +127,9 @@ export default function SummaryPanel() {
 
       {/* ARTICLES */}
       <div>
-        <h2 className="sidebar-title">Helpful Articles</h2>
+        <h2 className="sidebar-title" style={{ color: "#0284c7" }}>
+          Helpful Articles
+        </h2>
 
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
@@ -156,14 +161,15 @@ export default function SummaryPanel() {
         </table>
       </div>
 
-      {/* YOUTUBE VIDEOS */}
+      {/* VIDEOS */}
       <div style={{ marginTop: "35px" }}>
-        <h2 className="sidebar-title">Helpful Videos</h2>
+        <h2 className="sidebar-title" style={{ color: "#0284c7" }}>
+          Helpful Videos
+        </h2>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr",
             gap: "14px",
           }}
         >
@@ -177,11 +183,13 @@ export default function SummaryPanel() {
                 display: "flex",
                 gap: "12px",
                 padding: "10px",
-                background: "#020617",
+                background: "#ffffff",
                 borderRadius: "10px",
                 textDecoration: "none",
-                color: "white",
+                color: "#000000",
                 alignItems: "center",
+                border: "1px solid rgba(0,0,0,0.08)",
+                transition: "0.2s",
               }}
             >
               <img
@@ -206,13 +214,17 @@ export default function SummaryPanel() {
   );
 }
 
+/* TABLE STYLES */
 const th = {
   textAlign: "left",
   padding: "10px",
-  borderBottom: "1px solid #1e293b",
+  borderBottom: "1px solid rgba(0,0,0,0.1)",
+  color: "#000000",
+  fontWeight: "600",
 };
 
 const td = {
   padding: "12px 10px",
-  borderBottom: "1px solid #0f172a",
+  borderBottom: "1px solid rgba(0,0,0,0.08)",
+  color: "#000000",
 };
