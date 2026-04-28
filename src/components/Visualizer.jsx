@@ -31,7 +31,6 @@ const Visualizer = forwardRef(({ text }, ref) => {
     document.addEventListener("pointerdown", unlock);
   }, []);
 
-  // ORB VISUALIZER
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -41,7 +40,8 @@ const Visualizer = forwardRef(({ text }, ref) => {
     const draw = () => {
       requestAnimationFrame(draw);
 
-      ctx.fillStyle = "#020617";
+      // 🌿 LIGHT BACKGROUND (instead of dark)
+      ctx.fillStyle = "#f8fbff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const cx = canvas.width / 2;
@@ -65,18 +65,20 @@ const Visualizer = forwardRef(({ text }, ref) => {
         base,
       );
 
-      gradient.addColorStop(0, "rgba(0,255,200,0.9)");
-      gradient.addColorStop(0.4, "rgba(0,200,255,0.6)");
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
+      // 🌤 SKY COLOR SYSTEM
+      gradient.addColorStop(0, "rgba(56,189,248,0.9)"); // sky-400
+      gradient.addColorStop(0.4, "rgba(14,165,233,0.5)"); // sky-500
+      gradient.addColorStop(1, "rgba(255,255,255,0)");
 
       ctx.beginPath();
       ctx.arc(cx, cy, base, 0, Math.PI * 2);
       ctx.fillStyle = gradient;
       ctx.fill();
 
+      // 🌿 OUTER RING (soft sky glow)
       ctx.beginPath();
       ctx.arc(cx, cy, base + glow, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(0,255,200,0.25)";
+      ctx.strokeStyle = "rgba(56,189,248,0.25)";
       ctx.lineWidth = speaking ? 3 : 1;
       ctx.stroke();
     };
